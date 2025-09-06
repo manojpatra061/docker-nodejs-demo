@@ -1,6 +1,6 @@
 # Docker Node.js Demo
 
-The repo is focusing on building and managing microservices with Node.js, Docker, and Docker Compose. It has five branches (including main), main branch is the complete implementation, where as others lead to main in steps.
+The repo is focusing on building and managing microservices with Node.js, Docker, and Docker Compose. It has five branches (including main), main branch is the complete implementation, whereas others lead to main in steps.
 
 ## Table of Contents
 
