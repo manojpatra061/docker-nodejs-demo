@@ -1,0 +1,54 @@
+# compose.yaml file
+
+services:
+  book-service:
+    # build: ./book-service
+    image: manojpatra061/book-service:v1
+    # ports:
+    #   - "3000:3000"
+    ports:
+      - "80"
+    networks:
+      - app-network
+    environment:
+      - DATABASE_URL=mongodb://book-db-service:27017/
+    depends_on:
+      - book-db-service
+
+  book-db-service:
+    image: mongo:8.0.13
+    networks:
+      - app-network
+    volumes:
+      - book_db_data:/data/db
+
+  loan-service:
+    # build: ./loan-service
+    image: manojpatra061/loan-service:v1
+    # ports:
+    #   - "3001:3001"
+    ports:
+      - "3001"
+    networks:
+      - app-network
+    environment:
+      - BOOK_SERVICE_URL=http://book-service:3000
+
+  nginx-service:
+    image: nginx:1.29.1
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf # file bind mounting
+    depends_on:
+      - book-service
+      - loan-service
+
+volumes:
+  book_db_data:
+
+
+networks:
+  app-network:
