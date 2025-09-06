@@ -1,12 +1,14 @@
 # compose.yaml file
-# Running Multiple Containers — HTTP Requests
+# Running Multiple Containers — Reverse Proxy & Mounting  Files
 
 services:
   book-service:
     build: ./book-service
     image: book-service-img
+    # ports:
+    #   - "3000:3000"
     ports:
-      - "3000:3000"
+      - "80"
     networks:
       - app-network
     environment:
@@ -24,16 +26,26 @@ services:
   loan-service:
     build: ./loan-service
     image: loan-service-img
+    # ports:
+    #   - "3001:3001"
     ports:
-      - "3001:3001"
+      - "3001"
     networks:
       - app-network
     environment:
       - BOOK_SERVICE_URL=http://book-service:3000
-      # loan-service will call book-service using this URL. 
-      # Example: fetch(`${process.env.BOOK_SERVICE_URL}/books`) 
-      # In the Docker network, 'book-service' points to the container on port 3000.
 
+  nginx-service:
+    image: nginx:1.28.0
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf # file bind mounting
+    depends_on:
+      - book-service
+      - loan-service
 
 volumes:
   book_db_data:

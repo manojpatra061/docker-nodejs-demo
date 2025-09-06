@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 import dotenv from "dotenv";
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 dotenv.config();
 
@@ -17,20 +17,14 @@ const loans = [
   },
 ];
 
-// set the endpoint of the bookService
-// if running the app outside of docker compose, will default to localhost:3000
-// if running the app as part of docker compose, will take the environment variable
-const bookServiceEndpoint =
-  process.env.BOOK_SERVICE_URL || "http://localhost:3000";
-
 app.get("/loans", async (req, res) => {
   try {
     // fetch the books from the book service
-    const response = await fetch(`${bookServiceEndpoint}/books`);
+    const response = await fetch(`${process.env.BOOK_SERVICE_URL}/books`);
     if (!response.ok) {
       throw new Error("Failed to fetch books");
     }
-    const books = await response.json();
+    const { books } = await response.json();
 
     // for each loan record, search the response from the book service to get the book details
     // and append the book detail to the loan record
@@ -42,7 +36,7 @@ app.get("/loans", async (req, res) => {
         book: bookDetails,
       };
     });
-    res.json(loanDetails);
+    res.json({ port, loanDetails });
   } catch (error) {
     console.error("Error fetching book details:", error);
     res.status(500).send("Failed to fetch book details");

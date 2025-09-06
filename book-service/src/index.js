@@ -5,14 +5,14 @@ import dbStart from "./db/db.js";
 import dotenv from "dotenv";
 
 const app = express();
-const port = 3000;
 dotenv.config();
+const port = process.env.PORT || 3000;
 
 dbStart();
 
 app.get("/books", async (req, res) => {
   const books = await Book.find({});
-  res.json(books);
+  res.json({ port, books });
 });
 
 app.listen(port, () => {
