@@ -1,26 +1,18 @@
 import express from "express";
+
+import Book from "./models/bookModel.js";
+import dbStart from "./db/db.js";
 import dotenv from "dotenv";
-dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
+dotenv.config();
 
-const books = [
-  { id: 1, title: "1984", author: "George Orwell" },
-  {
-    id: 2,
-    title: "Brave New World",
-    author: "Aldous Huxley",
-  },
-  {
-    id: 3,
-    title: "The Catcher in the Rye",
-    author: "J.D. Salinger",
-  },
-];
+dbStart();
 
 app.get("/books", async (req, res) => {
-  res.json({ port, books });
+  const books = await Book.find({});
+  res.json(books);
 });
 
 app.listen(port, () => {

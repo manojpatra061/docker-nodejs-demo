@@ -1,0 +1,28 @@
+services:
+  book-service:
+    build: ./book-service
+    image: book-service-img
+    ports:
+      - "3000:3000"
+    expose:
+      - 3000
+    networks:
+      - app-network
+    environment:
+      - DATABASE_URL=mongodb://book-db-service:27017/
+    depends_on:
+      - book-db-service
+
+  book-db-service:
+    image: mongo:6.0.26
+    networks:
+      - app-network
+    volumes:
+      - book_db_data:/data/db
+
+volumes:
+  book_db_data:
+
+
+networks:
+  app-network:
