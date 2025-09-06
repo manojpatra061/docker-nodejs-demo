@@ -1,10 +1,9 @@
 # compose.yaml file
-# Running Multiple Containers — Reverse Proxy & Mounting  Files
 
 services:
   book-service:
-    build: ./book-service
-    image: book-service-img
+    # build: ./book-service
+    image: manojpatra061/book-service:v1
     # ports:
     #   - "3000:3000"
     ports:
@@ -17,15 +16,15 @@ services:
       - book-db-service
 
   book-db-service:
-    image: mongo:6.0.26
+    image: mongo:8.0.13
     networks:
       - app-network
     volumes:
       - book_db_data:/data/db
 
   loan-service:
-    build: ./loan-service
-    image: loan-service-img
+    # build: ./loan-service
+    image: manojpatra061/loan-service:v1
     # ports:
     #   - "3001:3001"
     ports:
@@ -36,7 +35,7 @@ services:
       - BOOK_SERVICE_URL=http://book-service:3000
 
   nginx-service:
-    image: nginx:1.28.0
+    image: nginx:1.29.1
     ports:
       - "80:80"
     networks:
