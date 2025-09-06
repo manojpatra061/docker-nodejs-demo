@@ -1,11 +1,12 @@
+# compose.yaml file
+# Running Multiple Containers — HTTP Requests
+
 services:
   book-service:
     build: ./book-service
     image: book-service-img
     ports:
       - "3000:3000"
-    expose:
-      - 3000
     networks:
       - app-network
     environment:
@@ -19,6 +20,20 @@ services:
       - app-network
     volumes:
       - book_db_data:/data/db
+
+  loan-service:
+    build: ./loan-service
+    image: loan-service-img
+    ports:
+      - "3001:3001"
+    networks:
+      - app-network
+    environment:
+      - BOOK_SERVICE_URL=http://book-service:3000
+      # loan-service will call book-service using this URL. 
+      # Example: fetch(`${process.env.BOOK_SERVICE_URL}/books`) 
+      # In the Docker network, 'book-service' points to the container on port 3000.
+
 
 volumes:
   book_db_data:
